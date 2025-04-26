@@ -1,0 +1,81 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>웹게임</title>
+  </head>
+  <body>
+    <div id="root">
+      <!--  -->
+    </div>
+    <script
+      crossorigin
+      src="https://unpkg.com/react@18/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"
+    ></script>
+    <!--<script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>-->
+    <!--<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>-->
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <script type="text/babel">
+      "use strict";
+      /*
+      class LikeButton extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = { liked: false };
+        }
+        render() {
+          if (this.state.liked) {
+            return "You liked this.";
+          }
+          // return React.createElement(
+          //   "button",
+          //   { onClick: () => this.setState({ liked: true }) },
+          //   "Like"
+          // );
+          return (
+            <button
+              onClick={() => {
+                // this.state.liked = true;
+                this.setState({ liked: true });
+              }}
+            >
+              Like
+            </button>
+          );
+        }
+      } // 1% ErrorBoundary
+      */
+
+      // function LikeButton() {
+      const LikeButton = () => {
+        // this 쓸일이 없다.
+        // 함수형 컴포넌트 X 함수 컴포넌트
+        const [liked, setLiked] = React.useState(false);
+
+        // 뭔짓을 하던 리턴한게 화면이다.
+        if (liked) {
+          return "You liked this.";
+        }
+
+        return (
+          <button
+            onClick={() => {
+              setLiked(true);
+            }}
+          >
+            Like
+          </button>
+        );
+      };
+    </script>
+    <script type="text/babel">
+      // ReactDOM.render(<LikeButton />, document.querySelector("#root"));  // React 17버전 코드
+      ReactDOM.createRoot(document.querySelector("#root")).render(
+        <LikeButton />
+      ); // React 18
+    </script>
+  </body>
+</html>
