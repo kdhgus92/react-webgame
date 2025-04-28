@@ -21,32 +21,27 @@
     <script type="text/babel">
       "use strict";
 
-      class LikeButton extends React.Component {
-        constructor(props) {
-          super(props);
-          this.state = { liked: false };
+      // function LikeButton() {
+      const LikeButton = () => {
+        // this 쓸일이 없다.
+        // 함수형 컴포넌트 X 함수 컴포넌트
+        const [liked, setLiked] = React.useState(false);
+
+        // 뭔짓을 하던 리턴한게 화면이다.
+        if (liked) {
+          return "You liked this.";
         }
-        render() {
-          if (this.state.liked) {
-            return "You liked this.";
-          }
-          // return React.createElement(
-          //   "button",
-          //   { onClick: () => this.setState({ liked: true }) },
-          //   "Like"
-          // );
-          return (
-            <button
-              onClick={() => {
-                // this.state.liked = true;
-                this.setState({ liked: true });
-              }}
-            >
-              Like
-            </button>
-          );
-        }
-      } // 1% ErrorBoundary
+
+        return (
+          <button
+            onClick={() => {
+              setLiked(true);
+            }}
+          >
+            Like
+          </button>
+        );
+      };
     </script>
     <script type="text/babel">
       // ReactDOM.render(<LikeButton />, document.querySelector("#root"));  // React 17버전 코드
