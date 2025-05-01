@@ -1,70 +1,80 @@
-import React, { Component } from "react";
+import React, { useState, useRef } from "react";
 
-class ResponseCheck extends Component {
-  state = {
-    state: "waiting",
-    message: "클릭해서 시작하세요.",
-    result: [],
-  };
+const ResponseCheck = () => {
+  const [state, setState] = useState("waiting");
+  const [message, setMessage] = useState("클릭해서 시작하세요.");
+  const [result, setResult] = useState([]);
+  const timeout = useRef(null);
+  const startTime = useRef();
+  const endTime = useRef();
 
-  timeout;
-  startTime;
-
-  onClickScreen = () => {
-    const { state, message, result } = this.state;
+  const onClickScreen = () => {
     if (state === "waiting") {
-      this.setState({
-        state: "ready",
-        message: "초록색이 되면 클릭하세요.",
-      });
-      this.timeout = setTimeout(() => {
-        this.setState({
-          state: "now",
-          message: "지금 클릭",
-        });
-        this.startTime = new Date();
+      setState("ready");
+      setMessage("초록색이 되면 클릭하세요.");
+      timeout.current = setTimeout(() => {
+        setState("now");
+        setMessage("지금 클릭");
+        startTime.current = new Date();
       }, Math.floor(Math.random() * 1000) + 2000); // 2초~3초 랜덤
     } else if (state === "ready") {
       // 성급하게 클릭
-      clearTimeout(this.timeout);
-      this.setState({
-        state: "waiting",
-        message: "너무 성급하시군요! 초록색이 된 후에 클릭하세요.",
-      });
+      clearTimeout(timeout.current);
+      setState("waiting");
+      setMessage("너무 성급하시군요! 초록색이 된 후에 클릭하세요.");
     } else if (state === "now") {
       // 반응속도 체크
-      this.endTime = new Date();
-      this.setState((prevState) => {
-        return {
-          state: "waiting",
-          message: "클릭해서 시작하세요.",
-          result: [...prevState.result, this.endTime - this.startTime],
-        };
+      endTime.current = new Date();
+      setState("waiting");
+      setMessage("클릭해서 시작하세요.");
+      setResult((prevResult) => {
+        return [...prevResult, endTime.current - startTime.current];
       });
     }
   };
 
-  renderAverage = () => {
-    const { result } = this.state;
+  const onReset = () => {
+    setResult([]);
+  };
+
+  const renderAverage = () => {
     return result.length === 0 ? null : (
-      <div>평균 시간:{result.reduce((a, c) => a + c) / result.length}ms</div>
+      <>
+        <div>평균 시간:{result.reduce((a, c) => a + c) / result.length}ms</div>
+        <button onClick={onReset}>리셋</button>
+      </>
     );
   };
 
-  render() {
-    const { state, message } = this.state;
-    return (
-      <>
-        <div id="screen" className={state} onClick={this.onClickScreen}>
-          {message}
-        </div>
-        {this.renderAverage()}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      <div id="screen" className={state} onClick={onClickScreen}>
+        {message}
+      </div>
+      {(() => {
+        if (result.length === 0) {
+          return null;
+        } else {
+          return (
+            <>
+              <div>
+                평균 시간:{result.reduce((a, c) => a + c) / result.length}ms
+              </div>
+              <button onClick={onReset}>리셋</button>
+            </>
+          );
+        }
+      })()}
+      {/* {renderAverage()} */}
+    </>
+  );
+};
 
 export default ResponseCheck;
 
-// false, undefined, null은 jsx에서 태그없음을 의미한다.
-// 삼항 연산자를 많이 쓴다.
+// ref 값이 바뀐다고 해서 다시 렌더링되지 않는다.
+// 값이 바뀌지만 화면에 영향 없고 싶을 때.
+
+// 즉시 실행함수를 만들어서 내부에서 if문을 쓸 수 있다.
+
+// 배열에 태그를 담아서 반환해도 유효한 문법. 대신 key를 잘 넣자.
