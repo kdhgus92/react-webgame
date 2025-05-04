@@ -1,11 +1,15 @@
 import React from "react";
 import Tr from "./Tr";
 
-const Table = () => {
+const Table = ({ tableData, dispatch }) => {
   return (
     <table>
       <tbody>
-        <Tr />
+        {Array(tableData.length) // tableData.length == 3
+          .fill()
+          .map((tr, i) => (
+            <Tr dispatch={dispatch} rowIndex={i} rowData={tableData[i]} /> // tableData[i] == ["", "", ""]
+          ))}
       </tbody>
     </table>
   );
