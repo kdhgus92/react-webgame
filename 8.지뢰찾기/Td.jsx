@@ -1,4 +1,4 @@
-import React, { useContext, useCallback } from "react";
+import React, { useContext, useCallback, memo, useMemo } from "react";
 import {
   CLICK_MINE,
   CODE,
@@ -53,7 +53,7 @@ const getTdText = (code) => {
   }
 };
 
-const Td = ({ rowIndex, cellIndex }) => {
+const Td = memo(({ rowIndex, cellIndex }) => {
   const { tableData, dispatch, halted } = useContext(TableContext);
 
   const onClickTd = useCallback(() => {
@@ -74,7 +74,6 @@ const Td = ({ rowIndex, cellIndex }) => {
         dispatch({ type: CLICK_MINE, row: rowIndex, cell: cellIndex });
         return;
     }
-    dispatch({ type: OPEN_CELL, row: rowIndex, cell: cellIndex });
   }, [tableData[rowIndex][cellIndex], halted]);
 
   const onRightClickTd = useCallback(
@@ -106,14 +105,27 @@ const Td = ({ rowIndex, cellIndex }) => {
   console.log("td rendered");
 
   return (
+    <RealTd
+      onClickTd={onClickTd}
+      onRightClickTd={onRightClickTd}
+      data={tableData[rowIndex][cellIndex]}
+    />
+  );
+});
+Td.displayName = "Td";
+
+const RealTd = memo(({ onClickTd, onRightClickTd, data }) => {
+  console.log("real td rendered");
+  return (
     <td
-      style={getTdStyle(tableData[rowIndex][cellIndex])}
+      style={getTdStyle(data)}
       onClick={onClickTd}
       onContextMenu={onRightClickTd}
     >
-      {getTdText(tableData[rowIndex][cellIndex])}
+      {getTdText(data)}
     </td>
   );
-};
+});
+RealTd.displayName = "RealTd";
 
 export default Td;
